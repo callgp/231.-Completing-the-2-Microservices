@@ -17,7 +17,7 @@ public class Quiz {
 
     private String title;
 
-    @ManyToMany
-    private List<Question> questions; // JPA handles the join table automatically
+    @ElementCollection
+    private List<Integer> questionIds; // JPA handles the join table automatically
 }
 
