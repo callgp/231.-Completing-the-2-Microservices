@@ -57,12 +57,15 @@ return new ResponseEntity<>("success", HttpStatus.CREATED);
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
        // Optional<Quiz> quiz= quizDao.findById(id);
       //  List<Integer> questionsFromDB=quiz.get().getQuestionIds();
-        List<QuestionWrapper> questionsForUser=new ArrayList<>();
+       // List<QuestionWrapper> questionsForUser=new ArrayList<>();
         /* for(Quest q:questionsFromDB){
              QuestionWrapper qw=new QuestionWrapper(q.getId(),q.getQuestionTitle(),q.getOption1(),q.getOption2(),q.getOption3(),q.getOption4());
              questionsForUser.add(qw);
          }*/
-        return new ResponseEntity<>(questionsForUser,HttpStatus.OK);
+        Quiz quiz=quizDao.findById(id).get();
+        List<Integer> questionIds=quiz.getQuestionIds();
+      ResponseEntity<List<QuestionWrapper>> questions= quizInterface.getQuestionsFromId(questionIds);
+        return questions;
     }
 
    /* public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
