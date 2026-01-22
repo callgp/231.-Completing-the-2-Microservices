@@ -83,19 +83,50 @@ return new ResponseEntity<>("success", HttpStatus.CREATED);
         return new ResponseEntity<>(right, HttpStatus.OK);
     }*/
 
-    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+  /*  public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
         Quiz quiz = quizDao.findById(id).get();
         List<Integer> questions = quiz.getQuestionIds();
         int right = 0;
 
 
-    /*    for (int i = 0; i < responses.size(); i++) {
+    *//*    for (int i = 0; i < responses.size(); i++) {
             if (responses.get(i).getResponse().equals(questions.get(i).getRightAnswer())) {
                 right++;
             }
         }
-*/
+*//*
         return new ResponseEntity<>(right, HttpStatus.OK);
-    }
+    }*/
 
+ /*   public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        // 1. Get the Quiz to find the IDs
+        Quiz quiz = quizDao.findById(id).get();
+        List<Integer> questionIds = quiz.getQuestionIds();
+
+        // 2. FETCH the actual questions (including rightAnswer) from the Question Microservice
+        // You already have quizInterface autowired, so use it here:
+        List<Question> questions = quizInterface.getQuestionsFromId(questionIds).getBody();
+
+        int right = 0;
+
+        // 3. NOW you can uncomment and use the loop
+        for (int i = 0; i < responses.size(); i++) {
+            // Use .trim() to handle the spacing issues we saw in Insomnia
+            if (responses.get(i).getResponse().trim().equals(questions.get(i).getRightAnswer().trim())) {
+                right++;
+            }
+        }
+
+        return new ResponseEntity<>(right, HttpStatus.OK);
+    }*/
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        // We do not need the Quiz or QuestionIds here because
+        // the responses already contain the question IDs.
+
+        // Delegate the work to the Question Service via Feign
+        ResponseEntity<Integer> score = quizInterface.getScore(responses);
+
+        return score;
+    }
 }
